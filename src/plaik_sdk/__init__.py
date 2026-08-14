@@ -2,8 +2,8 @@
 
 from plaik_contracts import (
     JobExecutionContext,
-    PackageStorefrontDeclaration,
-    StorefrontHookDeclaration,
+    PackageWebDeclaration,
+    WebHookDeclaration,
 )
 
 from .runtime import (
@@ -26,11 +26,11 @@ __all__ = [
     "JobExecutionContext",
     "JobHandler",
     "JobScheduler",
-    "PackageStorefrontDeclaration",
+    "PackageWebDeclaration",
     "SecretReader",
     "SecretValue",
     "ServiceResolver",
     "SettingsReader",
     "SlotContributor",
-    "StorefrontHookDeclaration",
+    "WebHookDeclaration",
 ]
