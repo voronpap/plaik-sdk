@@ -1,4 +1,4 @@
-"""Storefront theme manifest contracts."""
+"""Web theme manifest contracts."""
 
 from typing import Literal
 
