@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling==1.31.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "plaik-sdk"
+version = "0.2.0.dev0"
+description = "Public contracts and extension SDK for PLAIK"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+dependencies = [
+  "packaging==26.3",
+  "pydantic==2.13.4",
+]
+
+[project.urls]
+Repository = "https://github.com/voronpap/plaik-sdk"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "src/plaik_contracts",
+  "src/plaik_sdk",
+]
