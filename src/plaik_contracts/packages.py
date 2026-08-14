@@ -46,7 +46,7 @@ class PackageDependency(BaseModel):
         return value
 
 
-class StorefrontHookDeclaration(BaseModel):
+class WebHookDeclaration(BaseModel):
     """Persistent module-to-theme render binding stored in package metadata."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
@@ -72,20 +72,20 @@ class StorefrontHookDeclaration(BaseModel):
             or "\x00" in value
             or not value.endswith(".html")
         ):
-            raise ValueError("invalid storefront template path")
+            raise ValueError("invalid web template path")
         return value
 
 
-class PackageStorefrontDeclaration(BaseModel):
+class PackageWebDeclaration(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    hooks: list[StorefrontHookDeclaration] = Field(default_factory=list, max_length=128)
+    hooks: list[WebHookDeclaration] = Field(default_factory=list, max_length=128)
 
     @model_validator(mode="after")
-    def validate_unique_bindings(self) -> "PackageStorefrontDeclaration":
+    def validate_unique_bindings(self) -> "PackageWebDeclaration":
         identities = [(item.hook, item.template) for item in self.hooks]
         if len(identities) != len(set(identities)):
-            raise ValueError("duplicate storefront hook binding")
+            raise ValueError("duplicate web hook binding")
         return self
 
 
@@ -182,9 +182,7 @@ class PackageManifest(BaseModel):
     core: str
     dependencies: list[PackageDependency] = Field(default_factory=list)
     conflicts: list[PackageDependency] = Field(default_factory=list)
-    storefront: PackageStorefrontDeclaration = Field(
-        default_factory=PackageStorefrontDeclaration
-    )
+    web: PackageWebDeclaration = Field(default_factory=PackageWebDeclaration)
     permissions: list[PackagePermissionDeclaration] = Field(
         default_factory=list, max_length=256
     )
@@ -229,7 +227,7 @@ class PackageManifest(BaseModel):
             raise ValueError(
                 f"package relationship is both dependency and conflict: {sorted(overlap)}"
             )
-        if self.storefront.hooks and self.type not in {
+        if self.web.hooks and self.type not in {
             PackageType.MODULE,
             PackageType.INTEGRATION,
         }:
@@ -250,9 +248,7 @@ class PackageManifest(BaseModel):
                 self.storage,
             )
         )
-        if self.type == PackageType.PACK and (
-            has_implementation or self.storefront.hooks
-        ):
+        if self.type == PackageType.PACK and (has_implementation or self.web.hooks):
             raise ValueError("pack packages may declare only dependencies and conflicts")
         if self.type == PackageType.THEME and has_implementation:
             raise ValueError(
