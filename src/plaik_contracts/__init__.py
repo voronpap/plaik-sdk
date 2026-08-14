@@ -11,9 +11,9 @@ from .packages import (
     PackageServiceDeclaration,
     PackageSettingDeclaration,
     PackageStorageDeclaration,
-    PackageStorefrontDeclaration,
     PackageType,
-    StorefrontHookDeclaration,
+    PackageWebDeclaration,
+    WebHookDeclaration,
 )
 from .themes import ThemeAssets, ThemeManifest
 
@@ -28,9 +28,9 @@ __all__ = [
     "PackageServiceDeclaration",
     "PackageSettingDeclaration",
     "PackageStorageDeclaration",
-    "PackageStorefrontDeclaration",
     "PackageType",
-    "StorefrontHookDeclaration",
+    "PackageWebDeclaration",
+    "WebHookDeclaration",
     "ThemeAssets",
     "ThemeManifest",
 ]
