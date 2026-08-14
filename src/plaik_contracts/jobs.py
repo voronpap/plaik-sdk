@@ -1,4 +1,4 @@
-"""Public job-execution contracts shared by PLAIK Core and extensions."""
+"""Public job-execution contracts shared by Core and extensions."""
 
 from __future__ import annotations
 

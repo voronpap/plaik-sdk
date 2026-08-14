@@ -1,4 +1,4 @@
-"""Public, versioned contracts shared by PLAIK Core, applications and extensions."""
+"""Public, versioned contracts shared by Core, applications and extensions."""
 
 from .jobs import JobExecutionContext
 from .packages import (
@@ -11,8 +11,8 @@ from .packages import (
     PackageServiceDeclaration,
     PackageSettingDeclaration,
     PackageStorageDeclaration,
-    PackageType,
     PackageWebDeclaration,
+    PackageType,
     WebHookDeclaration,
 )
 from .themes import ThemeAssets, ThemeManifest
@@ -28,8 +28,8 @@ __all__ = [
     "PackageServiceDeclaration",
     "PackageSettingDeclaration",
     "PackageStorageDeclaration",
-    "PackageType",
     "PackageWebDeclaration",
+    "PackageType",
     "WebHookDeclaration",
     "ThemeAssets",
     "ThemeManifest",

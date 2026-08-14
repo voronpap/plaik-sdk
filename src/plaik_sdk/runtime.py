@@ -1,4 +1,4 @@
-"""Public protocols injected into an extension by PLAIK composition."""
+"""Public protocols injected into an extension by the Platform composition."""
 
 from __future__ import annotations
 

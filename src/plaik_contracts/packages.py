@@ -1,4 +1,4 @@
-"""Base PLAIK package manifest contracts."""
+"""Base package manifest contracts."""
 
 from enum import StrEnum
 from pathlib import PurePosixPath, PureWindowsPath
@@ -182,7 +182,9 @@ class PackageManifest(BaseModel):
     core: str
     dependencies: list[PackageDependency] = Field(default_factory=list)
     conflicts: list[PackageDependency] = Field(default_factory=list)
-    web: PackageWebDeclaration = Field(default_factory=PackageWebDeclaration)
+    web: PackageWebDeclaration = Field(
+        default_factory=PackageWebDeclaration
+    )
     permissions: list[PackagePermissionDeclaration] = Field(
         default_factory=list, max_length=256
     )
@@ -248,7 +250,9 @@ class PackageManifest(BaseModel):
                 self.storage,
             )
         )
-        if self.type == PackageType.PACK and (has_implementation or self.web.hooks):
+        if self.type == PackageType.PACK and (
+            has_implementation or self.web.hooks
+        ):
             raise ValueError("pack packages may declare only dependencies and conflicts")
         if self.type == PackageType.THEME and has_implementation:
             raise ValueError(
