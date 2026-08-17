@@ -7,6 +7,8 @@ from packaging.specifiers import InvalidSpecifier, SpecifierSet
 from packaging.version import InvalidVersion, Version
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from .theme_api import WebSlotDeclaration
+
 
 PACKAGE_ID_PATTERN = r"^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
 SEMVER_PATTERN = r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$"
@@ -80,12 +82,16 @@ class PackageWebDeclaration(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     hooks: list[WebHookDeclaration] = Field(default_factory=list, max_length=128)
+    slots: list[WebSlotDeclaration] = Field(default_factory=list, max_length=128)
 
     @model_validator(mode="after")
     def validate_unique_bindings(self) -> "PackageWebDeclaration":
-        identities = [(item.hook, item.template) for item in self.hooks]
-        if len(identities) != len(set(identities)):
+        hook_identities = [(item.hook, item.template) for item in self.hooks]
+        if len(hook_identities) != len(set(hook_identities)):
             raise ValueError("duplicate web hook binding")
+        slot_identities = [(item.slot, item.template) for item in self.slots]
+        if len(slot_identities) != len(set(slot_identities)):
+            raise ValueError("duplicate web slot binding")
         return self
 
 
@@ -261,11 +267,13 @@ class PackageManifest(BaseModel):
             raise ValueError(
                 f"package relationship is both dependency and conflict: {sorted(overlap)}"
             )
-        if self.web.hooks and self.type not in {
+        if (self.web.hooks or self.web.slots) and self.type not in {
             PackageType.MODULE,
             PackageType.INTEGRATION,
         }:
-            raise ValueError("only module or integration packages may declare hooks")
+            raise ValueError(
+                "only module or integration packages may declare hooks or slots"
+            )
         self._validate_implementation_declarations()
         self._validate_owned_namespaces()
         return self
@@ -283,18 +291,18 @@ class PackageManifest(BaseModel):
             )
         )
         if self.type == PackageType.PACK and (
-            has_implementation or self.web.hooks
+            has_implementation or self.web.hooks or self.web.slots
         ):
             raise ValueError(
                 "pack packages may declare only dependencies, conflicts and "
                 "capability requires"
             )
         if self.type == PackageType.THEME and (
-            has_implementation or self.requires
+            has_implementation or self.requires or self.web.hooks or self.web.slots
         ):
             raise ValueError(
                 "theme packages may not declare permissions, settings, services, "
-                "events, provides, requires, migrations or storage"
+                "events, provides, requires, migrations, storage, hooks or slots"
             )
 
     def _validate_owned_namespaces(self) -> None:

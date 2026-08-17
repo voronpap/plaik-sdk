@@ -8,6 +8,7 @@ This repository owns the stable interfaces that third-party modules, integration
 
 - public contracts and typed protocol surfaces;
 - package manifest and schema definitions, including capability `provides` / `requires`;
+- Theme API v1 presentation contracts (`theme_api`, dotted UI slots, `UiState`);
 - domain-neutral kernel refs (`ScopeRef`, `ResourceRef`, `SecretReference`, `ConnectionRef`, `EventEnvelope`, `HealthIssue`, optional `ActionRef`);
 - SDK helpers;
 - compatibility validators;
