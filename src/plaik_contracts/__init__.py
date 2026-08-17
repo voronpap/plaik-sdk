@@ -36,6 +36,17 @@ from .theme_api import (
     UiState,
     WebSlotDeclaration,
 )
+from .theme_composition import (
+    BlockDefinition,
+    BlockInstance,
+    CompositionSchemaVersion,
+    PageTemplate,
+    SectionDefinition,
+    SectionInstance,
+    SettingFieldSchema,
+    SettingFieldType,
+    validate_settings_against_schema,
+)
 from .themes import ThemeAssets, ThemeManifest
 
 __all__ = [
@@ -71,4 +82,13 @@ __all__ = [
     "SlotContribution",
     "SlotDefinition",
     "UiState",
+    "BlockDefinition",
+    "BlockInstance",
+    "CompositionSchemaVersion",
+    "PageTemplate",
+    "SectionDefinition",
+    "SectionInstance",
+    "SettingFieldSchema",
+    "SettingFieldType",
+    "validate_settings_against_schema",
 ]

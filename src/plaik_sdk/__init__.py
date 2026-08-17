@@ -19,6 +19,13 @@ from plaik_contracts import (
     UiState,
     WebHookDeclaration,
     WebSlotDeclaration,
+    BlockDefinition,
+    BlockInstance,
+    PageTemplate,
+    SectionDefinition,
+    SectionInstance,
+    SettingFieldSchema,
+    SettingFieldType,
 )
 
 from .runtime import (
@@ -63,4 +70,11 @@ __all__ = [
     "UiState",
     "WebHookDeclaration",
     "WebSlotDeclaration",
+    "BlockDefinition",
+    "BlockInstance",
+    "PageTemplate",
+    "SectionDefinition",
+    "SectionInstance",
+    "SettingFieldSchema",
+    "SettingFieldType",
 ]
