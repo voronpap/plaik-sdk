@@ -12,7 +12,13 @@ from plaik_contracts import (
     ResourceRef,
     ScopeRef,
     SecretReference,
+    SlotContribution,
+    SlotDefinition,
+    ThemeApiVersion,
+    ThemeCompatibility,
+    UiState,
     WebHookDeclaration,
+    WebSlotDeclaration,
 )
 
 from .runtime import (
@@ -50,5 +56,11 @@ __all__ = [
     "ServiceResolver",
     "SettingsReader",
     "SlotContributor",
+    "SlotContribution",
+    "SlotDefinition",
+    "ThemeApiVersion",
+    "ThemeCompatibility",
+    "UiState",
     "WebHookDeclaration",
+    "WebSlotDeclaration",
 ]

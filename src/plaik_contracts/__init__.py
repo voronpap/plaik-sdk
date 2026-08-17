@@ -28,6 +28,14 @@ from .refs import (
     ScopeRef,
     SecretReference,
 )
+from .theme_api import (
+    SlotContribution,
+    SlotDefinition,
+    ThemeApiVersion,
+    ThemeCompatibility,
+    UiState,
+    WebSlotDeclaration,
+)
 from .themes import ThemeAssets, ThemeManifest
 
 __all__ = [
@@ -55,6 +63,12 @@ __all__ = [
     "ScopeRef",
     "SecretReference",
     "WebHookDeclaration",
+    "WebSlotDeclaration",
+    "ThemeApiVersion",
     "ThemeAssets",
+    "ThemeCompatibility",
     "ThemeManifest",
+    "SlotContribution",
+    "SlotDefinition",
+    "UiState",
 ]
