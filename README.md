@@ -7,11 +7,14 @@ This repository owns the stable interfaces that third-party modules, integration
 ## Scope
 
 - public contracts and typed protocol surfaces;
-- package manifest and schema definitions;
+- package manifest and schema definitions, including capability `provides` / `requires`;
+- domain-neutral kernel refs (`ScopeRef`, `ResourceRef`, `SecretReference`, `ConnectionRef`, `EventEnvelope`, `HealthIssue`, optional `ActionRef`);
 - SDK helpers;
 - compatibility validators;
 - scaffolding and developer tooling;
 - public examples required to author PLAIK extensions.
+
+`SecretReference` is a pointer (`provider`, `key`, `version`) with a redacted repr. It is not a secret value. Capability ids are shared contract names, not provider-package namespaces. Packs may require capabilities and must not provide them.
 
 ## Out of scope
 

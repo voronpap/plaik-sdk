@@ -126,12 +126,41 @@ class PackageEventDeclaration(BaseModel):
     version: str = Field(pattern=STABLE_SEMVER_PATTERN)
 
 
-class PackageCapabilityDeclaration(BaseModel):
-    """Named capability advertised by the package for dependency resolution."""
+class PackageCapabilityProvide(BaseModel):
+    """Shared capability advertised by a module or integration.
+
+    ``id`` is a contract name (for example ``shipping.provider``), not a
+    provider-package namespace. Several packages may provide the same id.
+    """
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     id: str = Field(pattern=CAPABILITY_ID_PATTERN, max_length=192)
+    version: str = Field(pattern=STABLE_SEMVER_PATTERN)
+
+
+class PackageCapabilityRequire(BaseModel):
+    """Shared capability requirement with a compatibility range."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    id: str = Field(pattern=CAPABILITY_ID_PATTERN, max_length=192)
+    version: str = "*"
+    optional: bool = False
+
+    @field_validator("version")
+    @classmethod
+    def validate_version_range(cls, value: str) -> str:
+        if value == "*":
+            return value
+        try:
+            SpecifierSet(value)
+        except InvalidSpecifier as error:
+            raise ValueError("invalid capability version range") from error
+        return value
+
+
+PackageCapabilityDeclaration = PackageCapabilityProvide
 
 
 class PackageMigrationDeclaration(BaseModel):
@@ -195,7 +224,10 @@ class PackageManifest(BaseModel):
         default_factory=list, max_length=128
     )
     events: list[PackageEventDeclaration] = Field(default_factory=list, max_length=128)
-    capabilities: list[PackageCapabilityDeclaration] = Field(
+    provides: list[PackageCapabilityProvide] = Field(
+        default_factory=list, max_length=128
+    )
+    requires: list[PackageCapabilityRequire] = Field(
         default_factory=list, max_length=128
     )
     migrations: list[PackageMigrationDeclaration] = Field(
@@ -245,7 +277,7 @@ class PackageManifest(BaseModel):
                 self.settings,
                 self.services,
                 self.events,
-                self.capabilities,
+                self.provides,
                 self.migrations,
                 self.storage,
             )
@@ -253,11 +285,16 @@ class PackageManifest(BaseModel):
         if self.type == PackageType.PACK and (
             has_implementation or self.web.hooks
         ):
-            raise ValueError("pack packages may declare only dependencies and conflicts")
-        if self.type == PackageType.THEME and has_implementation:
+            raise ValueError(
+                "pack packages may declare only dependencies, conflicts and "
+                "capability requires"
+            )
+        if self.type == PackageType.THEME and (
+            has_implementation or self.requires
+        ):
             raise ValueError(
                 "theme packages may not declare permissions, settings, services, "
-                "events, capabilities, migrations or storage"
+                "events, provides, requires, migrations or storage"
             )
 
     def _validate_owned_namespaces(self) -> None:
@@ -285,11 +322,24 @@ class PackageManifest(BaseModel):
             _require_owned_contract(self.id, event.contract)
             _require_stable_semver(event.version)
 
-        capability_ids = [item.id for item in self.capabilities]
-        if len(capability_ids) != len(set(capability_ids)):
-            raise ValueError("duplicate package capability")
-        for capability in self.capabilities:
-            _require_owned_contract(self.id, capability.id)
+        provided_ids = [item.id for item in self.provides]
+        if len(provided_ids) != len(set(provided_ids)):
+            raise ValueError("duplicate package capability provide")
+        for capability in self.provides:
+            _require_shared_capability_id(capability.id)
+            _require_stable_semver(capability.version)
+
+        required_ids = [item.id for item in self.requires]
+        if len(required_ids) != len(set(required_ids)):
+            raise ValueError("duplicate package capability require")
+        for capability in self.requires:
+            _require_shared_capability_id(capability.id)
+        overlap = set(provided_ids) & set(required_ids)
+        if overlap:
+            raise ValueError(
+                "package cannot both provide and require the same capability: "
+                f"{sorted(overlap)}"
+            )
 
         migration_versions = [item.version for item in self.migrations]
         if len(migration_versions) != len(set(migration_versions)):
@@ -319,6 +369,11 @@ def _require_owned_contract(package_id: str, contract: str) -> None:
         raise ValueError("core.* contracts are reserved for Platform Core")
     if not contract.startswith(f"{package_id}."):
         raise ValueError("contract name must use its package-owned namespace")
+
+
+def _require_shared_capability_id(capability_id: str) -> None:
+    if capability_id.startswith("core.") or capability_id == "core":
+        raise ValueError("core.* capabilities are reserved for Platform Core")
 
 
 def _require_stable_semver(value: str) -> None:
