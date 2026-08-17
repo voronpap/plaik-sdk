@@ -3,6 +3,8 @@
 from .jobs import JobExecutionContext
 from .packages import (
     PackageCapabilityDeclaration,
+    PackageCapabilityProvide,
+    PackageCapabilityRequire,
     PackageDependency,
     PackageEventDeclaration,
     PackageManifest,
@@ -15,11 +17,29 @@ from .packages import (
     PackageType,
     WebHookDeclaration,
 )
+from .refs import (
+    ActionRef,
+    ConnectionRef,
+    EventEnvelope,
+    HealthIssue,
+    HealthSeverity,
+    ResourceRef,
+    ScopeLevel,
+    ScopeRef,
+    SecretReference,
+)
 from .themes import ThemeAssets, ThemeManifest
 
 __all__ = [
+    "ActionRef",
+    "ConnectionRef",
+    "EventEnvelope",
+    "HealthIssue",
+    "HealthSeverity",
     "JobExecutionContext",
     "PackageCapabilityDeclaration",
+    "PackageCapabilityProvide",
+    "PackageCapabilityRequire",
     "PackageDependency",
     "PackageEventDeclaration",
     "PackageManifest",
@@ -30,6 +50,10 @@ __all__ = [
     "PackageStorageDeclaration",
     "PackageWebDeclaration",
     "PackageType",
+    "ResourceRef",
+    "ScopeLevel",
+    "ScopeRef",
+    "SecretReference",
     "WebHookDeclaration",
     "ThemeAssets",
     "ThemeManifest",
