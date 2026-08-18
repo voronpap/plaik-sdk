@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Protocol, TypeVar, runtime_checkable
 
-from plaik_contracts import JobExecutionContext
+from plaik_contracts import JobExecutionContext, ResourceRef, ScopeRef
 
 
 _PACKAGE_ID = re.compile(r"^[a-z][a-z0-9-]{1,63}$")
@@ -52,6 +52,9 @@ class EventPublisher(Protocol):
         payload: Mapping[str, Any],
         *,
         idempotency_key: str | None = None,
+        scope: ScopeRef | None = None,
+        resource: ResourceRef | None = None,
+        correlation_id: str | None = None,
     ) -> None: ...
 
 
