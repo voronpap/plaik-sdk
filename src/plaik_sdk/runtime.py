@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Protocol, TypeVar, runtime_checkable
 
-from plaik_contracts import JobExecutionContext, ResourceRef, ScopeRef
+from plaik_contracts import HealthIssue, JobExecutionContext, ResourceRef, ScopeRef
 
 
 _PACKAGE_ID = re.compile(r"^[a-z][a-z0-9-]{1,63}$")
@@ -79,6 +79,13 @@ class JobHandler(Protocol):
 
 
 @runtime_checkable
+class HealthReporter(Protocol):
+    """Report package-owned HealthIssue records. Not process /health or doctor."""
+
+    def report(self, issue: HealthIssue) -> None: ...
+
+
+@runtime_checkable
 class SlotContributor(Protocol):
     def bind(
         self,
@@ -103,6 +110,7 @@ class ExtensionRuntime:
     events: EventPublisher
     jobs: JobScheduler
     slots: SlotContributor
+    health: HealthReporter
 
     def __post_init__(self) -> None:
         if not _PACKAGE_ID.fullmatch(self.package_id):

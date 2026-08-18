@@ -10,6 +10,7 @@ This repository owns the stable interfaces that third-party modules, integration
 - package manifest and schema definitions, including capability `provides` / `requires`;
 - Theme API v1 presentation contracts (`theme_api`, dotted UI slots, `UiState`, page/section/block composition, settings/presets/revisions);
 - domain-neutral kernel refs (`ScopeRef`, `ResourceRef`, `SecretReference`, `ConnectionRef`, `EventEnvelope`, `HealthIssue`, optional `ActionRef`);
+- `ExtensionRuntime.health` (`HealthReporter`) for package-owned `HealthIssue` reports, not process `/health`;
 - SDK helpers;
 - compatibility validators;
 - scaffolding and developer tooling;
