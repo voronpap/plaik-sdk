@@ -19,6 +19,7 @@ from .theme_composition import (
     MAX_DECLARED_SECTION_TYPES,
     require_composition_id,
 )
+from .theme_configuration import MAX_PRESETS
 
 
 class ThemeAssets(BaseModel):
@@ -51,6 +52,8 @@ class ThemeManifest(BaseModel):
     blocks: list[str] = Field(
         default_factory=list, max_length=MAX_DECLARED_BLOCK_TYPES
     )
+    settings_schema: bool = False
+    presets: list[str] = Field(default_factory=list, max_length=MAX_PRESETS)
 
     @field_validator("theme_api")
     @classmethod
@@ -69,7 +72,7 @@ class ThemeManifest(BaseModel):
             require_public_slot_id(slot_id)
         return value
 
-    @field_validator("page_templates", "sections", "blocks")
+    @field_validator("page_templates", "sections", "blocks", "presets")
     @classmethod
     def validate_composition_ids(cls, value: list[str]) -> list[str]:
         if len(value) != len(set(value)):
@@ -90,4 +93,6 @@ class ThemeManifest(BaseModel):
             self.page_templates or self.sections or self.blocks
         ) and self.theme_api is None:
             raise ValueError("theme composition requires Theme API v1")
+        if (self.settings_schema or self.presets) and self.theme_api is None:
+            raise ValueError("theme configuration requires Theme API v1")
         return self

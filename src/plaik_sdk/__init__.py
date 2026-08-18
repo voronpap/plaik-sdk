@@ -26,6 +26,11 @@ from plaik_contracts import (
     SectionInstance,
     SettingFieldSchema,
     SettingFieldType,
+    ThemeCacheIdentity,
+    ThemeConfigurationRevision,
+    ThemePreset,
+    ThemeSettingsSchema,
+    ThemeSettingsValues,
 )
 
 from .runtime import (
@@ -77,4 +82,9 @@ __all__ = [
     "SectionInstance",
     "SettingFieldSchema",
     "SettingFieldType",
+    "ThemeCacheIdentity",
+    "ThemeConfigurationRevision",
+    "ThemePreset",
+    "ThemeSettingsSchema",
+    "ThemeSettingsValues",
 ]

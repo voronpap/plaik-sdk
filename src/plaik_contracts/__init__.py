@@ -47,6 +47,17 @@ from .theme_composition import (
     SettingFieldType,
     validate_settings_against_schema,
 )
+from .theme_configuration import (
+    ConfigurationSchemaVersion,
+    ResponsiveBreakpoint,
+    RevisionStatus,
+    ThemeCacheIdentity,
+    ThemeConfigurationRevision,
+    ThemePreset,
+    ThemeSettingsSchema,
+    ThemeSettingsValues,
+    validate_theme_settings,
+)
 from .themes import ThemeAssets, ThemeManifest
 
 __all__ = [
@@ -91,4 +102,13 @@ __all__ = [
     "SettingFieldSchema",
     "SettingFieldType",
     "validate_settings_against_schema",
+    "ConfigurationSchemaVersion",
+    "ResponsiveBreakpoint",
+    "RevisionStatus",
+    "ThemeCacheIdentity",
+    "ThemeConfigurationRevision",
+    "ThemePreset",
+    "ThemeSettingsSchema",
+    "ThemeSettingsValues",
+    "validate_theme_settings",
 ]
