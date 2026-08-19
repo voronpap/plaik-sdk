@@ -6,6 +6,7 @@ These types are shared by Core, SDK and packages. They must not import
 
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping
 from datetime import datetime
 from enum import StrEnum
@@ -28,6 +29,8 @@ _KIND_PATTERN = r"^[a-z][a-z0-9_.-]{0,63}$"
 _RESOURCE_ID_PATTERN = r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
 _ISSUE_CODE = r"^[a-z][a-z0-9_.-]{1,127}$"
 _CORRELATION_ID = r"^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$"
+EVENT_IDEMPOTENCY_KEY_PATTERN = r"^[A-Za-z0-9][A-Za-z0-9._:/-]{7,127}$"
+_EVENT_IDEMPOTENCY_KEY = re.compile(EVENT_IDEMPOTENCY_KEY_PATTERN)
 _JOB_TYPE = r"^[a-z][a-z0-9_.-]{1,127}$"
 
 
@@ -184,7 +187,10 @@ class EventEnvelope(BaseModel):
     payload: dict[str, Any]
     scope: ScopeRef
     resource: ResourceRef | None = None
-    idempotency_key: str | None = Field(default=None, min_length=1, max_length=128)
+    idempotency_key: str | None = Field(
+        default=None,
+        pattern=EVENT_IDEMPOTENCY_KEY_PATTERN,
+    )
     correlation_id: str | None = Field(default=None, pattern=_CORRELATION_ID)
     created_at: datetime
 
@@ -199,6 +205,14 @@ class EventEnvelope(BaseModel):
         if value.tzinfo is None:
             raise ValueError("event envelope created_at must be timezone-aware")
         return value
+
+
+def validate_event_idempotency_key(value: str) -> str:
+    """Return the event idempotency key unchanged if it matches the public contract."""
+
+    if type(value) is not str or not _EVENT_IDEMPOTENCY_KEY.fullmatch(value):
+        raise ValueError("invalid event idempotency key")
+    return value
 
 
 class HealthSeverity(StrEnum):
