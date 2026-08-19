@@ -27,6 +27,8 @@ from .refs import (
     ScopeLevel,
     ScopeRef,
     SecretReference,
+    EVENT_IDEMPOTENCY_KEY_PATTERN,
+    validate_event_idempotency_key,
 )
 from .theme_api import (
     SlotContribution,
@@ -64,6 +66,7 @@ __all__ = [
     "ActionRef",
     "ConnectionRef",
     "EventEnvelope",
+    "EVENT_IDEMPOTENCY_KEY_PATTERN",
     "HealthIssue",
     "HealthSeverity",
     "JobExecutionContext",
@@ -101,6 +104,7 @@ __all__ = [
     "SectionInstance",
     "SettingFieldSchema",
     "SettingFieldType",
+    "validate_event_idempotency_key",
     "validate_settings_against_schema",
     "ConfigurationSchemaVersion",
     "ResponsiveBreakpoint",
