@@ -70,6 +70,8 @@ class JobScheduler(Protocol):
         scheduled_at: datetime | None = None,
     ) -> str: ...
 
+    def register(self, job_type: str, handler: JobHandler) -> None: ...
+
 
 @runtime_checkable
 class JobHandler(Protocol):
