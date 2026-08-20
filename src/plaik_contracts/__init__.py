@@ -2,6 +2,8 @@
 
 from .jobs import JobExecutionContext
 from .packages import (
+    PackageAdminCommandDeclaration,
+    PackageAdminDeclaration,
     PackageCapabilityDeclaration,
     PackageCapabilityProvide,
     PackageCapabilityRequire,
@@ -70,6 +72,8 @@ __all__ = [
     "HealthIssue",
     "HealthSeverity",
     "JobExecutionContext",
+    "PackageAdminCommandDeclaration",
+    "PackageAdminDeclaration",
     "PackageCapabilityDeclaration",
     "PackageCapabilityProvide",
     "PackageCapabilityRequire",

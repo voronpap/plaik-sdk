@@ -20,6 +20,7 @@ CONTRACT_NAME_PATTERN = r"^[a-z][a-z0-9-]*(?:\.[a-z][A-Za-z0-9_-]*)+$"
 CAPABILITY_ID_PATTERN = r"^[a-z][a-z0-9-]*(?:\.[a-z][A-Za-z0-9_-]*)+$"
 STORAGE_ID_PATTERN = r"^[a-z][a-z0-9_.-]{0,63}$"
 MIGRATION_VERSION_PATTERN = r"^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$"
+ADMIN_COMMAND_ID_PATTERN = r"^[a-z][a-z0-9_.:-]{1,127}$"
 
 
 class PackageType(StrEnum):
@@ -207,6 +208,25 @@ class PackageStorageDeclaration(BaseModel):
     kind: str = Field(default="private", pattern=r"^(blob|media|private)$")
 
 
+class PackageAdminCommandDeclaration(BaseModel):
+    """Package-owned Admin JSON command: Mapping in, Mapping out."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    id: str = Field(pattern=ADMIN_COMMAND_ID_PATTERN)
+    permission: str = Field(pattern=PERMISSION_ID_PATTERN)
+
+
+class PackageAdminDeclaration(BaseModel):
+    """Admin command surface declared by a module or integration."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    commands: list[PackageAdminCommandDeclaration] = Field(
+        default_factory=list, max_length=128
+    )
+
+
 class PackageManifest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -242,6 +262,7 @@ class PackageManifest(BaseModel):
     storage: list[PackageStorageDeclaration] = Field(
         default_factory=list, max_length=64
     )
+    admin: PackageAdminDeclaration = Field(default_factory=PackageAdminDeclaration)
 
     @field_validator("core")
     @classmethod
@@ -288,6 +309,7 @@ class PackageManifest(BaseModel):
                 self.provides,
                 self.migrations,
                 self.storage,
+                self.admin.commands,
             )
         )
         if self.type == PackageType.PACK and (
@@ -302,7 +324,8 @@ class PackageManifest(BaseModel):
         ):
             raise ValueError(
                 "theme packages may not declare permissions, settings, services, "
-                "events, provides, requires, migrations, storage, hooks or slots"
+                "events, provides, requires, migrations, storage, admin commands, "
+                "hooks or slots"
             )
 
     def _validate_owned_namespaces(self) -> None:
@@ -359,6 +382,18 @@ class PackageManifest(BaseModel):
         storage_ids = [item.id for item in self.storage]
         if len(storage_ids) != len(set(storage_ids)):
             raise ValueError("duplicate package storage declaration")
+
+        declared_permissions = {item.id for item in self.permissions}
+        command_ids = [item.id for item in self.admin.commands]
+        if len(command_ids) != len(set(command_ids)):
+            raise ValueError("duplicate package admin command")
+        for command in self.admin.commands:
+            _require_owned_name(self.id, command.id, kind="admin command")
+            _require_owned_name(self.id, command.permission, kind="permission")
+            if command.permission not in declared_permissions:
+                raise ValueError(
+                    "admin command permission must be declared on the package"
+                )
 
 
 def _require_owned_name(package_id: str, value: str, *, kind: str) -> None:

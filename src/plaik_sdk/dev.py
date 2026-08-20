@@ -54,9 +54,6 @@ class _NullAdapter:
     def transaction(self):
         raise PackageDevError("package SQL is unavailable in isolated package tests")
 
-    def subscribe(self, *_args: object, **_kwargs: object) -> None:
-        return None
-
 
 def validate_package(path: Path | None = None) -> dict[str, Any]:
     root = package_root(path)
@@ -110,6 +107,7 @@ def inspect_package(path: Path | None = None) -> dict[str, Any]:
         "events": [item.model_dump(mode="json") for item in manifest.events],
         "migrations": [item.model_dump(mode="json") for item in manifest.migrations],
         "permissions": [item.model_dump(mode="json") for item in manifest.permissions],
+        "admin": manifest.admin.model_dump(mode="json"),
     }
     if root.is_dir():
         require_declared_files(root, manifest)
@@ -191,6 +189,7 @@ def development_runtime(package_id: str) -> ExtensionRuntime:
         slots=adapter,
         health=adapter,
         sql=adapter,
+        admin=adapter,
     )
 
 
