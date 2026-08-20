@@ -107,6 +107,7 @@ def inspect_package(path: Path | None = None) -> dict[str, Any]:
         "events": [item.model_dump(mode="json") for item in manifest.events],
         "migrations": [item.model_dump(mode="json") for item in manifest.migrations],
         "permissions": [item.model_dump(mode="json") for item in manifest.permissions],
+        "admin": manifest.admin.model_dump(mode="json"),
     }
     if root.is_dir():
         require_declared_files(root, manifest)
