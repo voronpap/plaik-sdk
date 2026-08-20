@@ -53,7 +53,7 @@ def _write_module(root: Path, package_id: str, kind: PackageType) -> None:
     (sql_dir / "001_init.sql").write_text(
         "-- Package-owned schema. Core sets search_path to this package schema.\n"
         "CREATE TABLE IF NOT EXISTS records (\n"
-        "    id BIGINT PRIMARY KEY,\n"
+        "    id TEXT PRIMARY KEY,\n"
         "    payload JSONB NOT NULL\n"
         ");\n",
         encoding="utf-8",
@@ -84,15 +84,16 @@ def _write_module(root: Path, package_id: str, kind: PackageType) -> None:
             "slots": [
                 {
                     "slot": "storefront.page.content",
-                    "template": "templates/slot.html",
+                    "template": "slot.html",
                     "position": 100,
                 }
             ],
         },
     }
     _write_json(root / MANIFEST_NAME, manifest)
-    (root / "templates").mkdir()
-    (root / "templates" / "slot.html").write_text(
+    web_dir = root / "web"
+    web_dir.mkdir()
+    (web_dir / "slot.html").write_text(
         f"<section data-plaik-package=\"{package_id}\"></section>\n",
         encoding="utf-8",
     )

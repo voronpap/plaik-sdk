@@ -28,6 +28,8 @@ plaik-sdk inspect catalog
 
 The operator CLI in PLAIK exposes the same loop as `plaik dev` and `plaik package`.
 
+Module and integration slot templates live under package `web/`. Manifest `web.slots[].template` and `web.hooks[].template` are relative to that directory (for example `slot.html`). Do not use a package-root `templates/` path for those fields; Core install staging resolves `{package}/web/{template}`. Theme packages still use Theme API `templates/` for layouts, sections and pages.
+
 `SecretReference` is a pointer (`provider`, `key`, `version`) with a redacted repr. It is not a secret value. Capability ids are shared contract names, not provider-package namespaces. Packs may require capabilities and must not provide them.
 
 ## Out of scope
