@@ -7,7 +7,7 @@ from packaging.specifiers import InvalidSpecifier, SpecifierSet
 from packaging.version import InvalidVersion, Version
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from .theme_api import WebSlotDeclaration
+from .theme_api import WebSlotDeclaration, _validate_web_template_path
 
 
 PACKAGE_ID_PATTERN = r"^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
@@ -61,22 +61,7 @@ class WebHookDeclaration(BaseModel):
     @field_validator("template")
     @classmethod
     def validate_template_path(cls, value: str) -> str:
-        posix = PurePosixPath(value)
-        windows = PureWindowsPath(value)
-        if (
-            posix.is_absolute()
-            or windows.is_absolute()
-            or bool(windows.drive)
-            or not posix.parts
-            or any(part in {"", ".", ".."} for part in posix.parts)
-            or posix.as_posix() != value
-            or "\\" in value
-            or ":" in value
-            or "\x00" in value
-            or not value.endswith(".html")
-        ):
-            raise ValueError("invalid web template path")
-        return value
+        return _validate_web_template_path(value)
 
 
 class PackageWebDeclaration(BaseModel):

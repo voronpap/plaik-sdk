@@ -103,6 +103,7 @@ def _validate_web_template_path(value: str) -> str:
         or ":" in value
         or "\x00" in value
         or not value.endswith(".html")
+        or posix.parts[0] == "templates"
     ):
         raise ValueError("invalid web template path")
     return value
