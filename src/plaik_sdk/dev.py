@@ -48,6 +48,9 @@ class _NullAdapter:
     def report(self, *_args: object, **_kwargs: object) -> None:
         return None
 
+    def subscribe(self, *_args: object, **_kwargs: object) -> None:
+        return None
+
 
 def validate_package(path: Path | None = None) -> dict[str, Any]:
     root = package_root(path)
