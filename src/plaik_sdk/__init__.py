@@ -53,6 +53,8 @@ from .runtime import (
     ServiceResolver,
     SettingsReader,
     SlotContributor,
+    PackageSql,
+    PackageSqlSession,
 )
 
 __all__ = [
@@ -67,6 +69,8 @@ __all__ = [
     "JobExecutionContext",
     "JobHandler",
     "JobScheduler",
+    "PackageSql",
+    "PackageSqlSession",
     "PackageCapabilityProvide",
     "PackageCapabilityRequire",
     "PackageDevError",

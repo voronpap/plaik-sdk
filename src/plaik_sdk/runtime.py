@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Protocol, TypeVar, runtime_checkable
+from typing import Any, ContextManager, Protocol, TypeVar, runtime_checkable
 
 from plaik_contracts import HealthIssue, JobExecutionContext, ResourceRef, ScopeRef
 
@@ -110,6 +110,36 @@ class SlotContributor(Protocol):
     ) -> None: ...
 
 
+@runtime_checkable
+class PackageSqlSession(Protocol):
+    """One unit of work against this package's PostgreSQL schema."""
+
+    def execute(
+        self,
+        sql: str,
+        params: Sequence[Any] | Mapping[str, Any] | None = None,
+    ) -> None: ...
+
+    def fetchone(
+        self,
+        sql: str,
+        params: Sequence[Any] | Mapping[str, Any] | None = None,
+    ) -> Mapping[str, Any] | None: ...
+
+    def fetchall(
+        self,
+        sql: str,
+        params: Sequence[Any] | Mapping[str, Any] | None = None,
+    ) -> tuple[Mapping[str, Any], ...]: ...
+
+
+@runtime_checkable
+class PackageSql(Protocol):
+    """Open a generation-fenced package LOGIN session. No DSN or password."""
+
+    def transaction(self) -> ContextManager[PackageSqlSession]: ...
+
+
 @dataclass(frozen=True, slots=True)
 class ExtensionRuntime:
     """The complete capability set visible to one extension instance."""
@@ -124,6 +154,7 @@ class ExtensionRuntime:
     jobs: JobScheduler
     slots: SlotContributor
     health: HealthReporter
+    sql: PackageSql
 
     def __post_init__(self) -> None:
         if not _PACKAGE_ID.fullmatch(self.package_id):
