@@ -90,6 +90,16 @@ class SlotContribution(BaseModel):
 
 
 def _validate_web_template_path(value: str) -> str:
+    """Relative template path for package ``web/`` and theme composition.
+
+    Module and integration ``web.slots`` / ``web.hooks`` resolve under
+    ``{package}/web/{template}``. Theme section and block templates are
+    relative to the theme ``templates/`` root (for example
+    ``sections/hero.html``), not a leading ``templates/`` component. A first
+    path part of ``templates`` is rejected because package install staging
+    would look for ``web/templates/...``. Theme layout files use ThemeManifest
+    layout ids and do not go through this helper.
+    """
     posix = PurePosixPath(value)
     windows = PureWindowsPath(value)
     if (
