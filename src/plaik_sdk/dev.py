@@ -54,9 +54,6 @@ class _NullAdapter:
     def transaction(self):
         raise PackageDevError("package SQL is unavailable in isolated package tests")
 
-    def subscribe(self, *_args: object, **_kwargs: object) -> None:
-        return None
-
 
 def validate_package(path: Path | None = None) -> dict[str, Any]:
     root = package_root(path)
@@ -191,6 +188,7 @@ def development_runtime(package_id: str) -> ExtensionRuntime:
         slots=adapter,
         health=adapter,
         sql=adapter,
+        admin=adapter,
     )
 
 

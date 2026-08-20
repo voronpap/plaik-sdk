@@ -55,6 +55,8 @@ from .runtime import (
     SlotContributor,
     PackageSql,
     PackageSqlSession,
+    PackageAdmin,
+    PackageAdminCommandHandler,
 )
 
 __all__ = [
@@ -69,6 +71,8 @@ __all__ = [
     "JobExecutionContext",
     "JobHandler",
     "JobScheduler",
+    "PackageAdmin",
+    "PackageAdminCommandHandler",
     "PackageSql",
     "PackageSqlSession",
     "PackageCapabilityProvide",

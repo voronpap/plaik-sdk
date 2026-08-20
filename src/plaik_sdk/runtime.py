@@ -140,6 +140,20 @@ class PackageSql(Protocol):
     def transaction(self) -> ContextManager[PackageSqlSession]: ...
 
 
+@runtime_checkable
+class PackageAdminCommandHandler(Protocol):
+    """Handle one Admin JSON command. Core does not interpret the mapping."""
+
+    def __call__(self, payload: Mapping[str, Any]) -> Mapping[str, Any]: ...
+
+
+@runtime_checkable
+class PackageAdmin(Protocol):
+    """Register generation-fenced Admin command handlers for this package."""
+
+    def register(self, command_id: str, handler: PackageAdminCommandHandler) -> None: ...
+
+
 @dataclass(frozen=True, slots=True)
 class ExtensionRuntime:
     """The complete capability set visible to one extension instance."""
@@ -155,6 +169,7 @@ class ExtensionRuntime:
     slots: SlotContributor
     health: HealthReporter
     sql: PackageSql
+    admin: PackageAdmin
 
     def __post_init__(self) -> None:
         if not _PACKAGE_ID.fullmatch(self.package_id):
