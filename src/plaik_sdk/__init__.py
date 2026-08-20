@@ -33,6 +33,14 @@ from plaik_contracts import (
     ThemeSettingsValues,
 )
 
+from .dev import (
+    PackageDevError,
+    build_package,
+    create_package,
+    inspect_package,
+    run_package_test,
+    validate_package,
+)
 from .runtime import (
     EventPublisher,
     Extension,
@@ -61,6 +69,12 @@ __all__ = [
     "JobScheduler",
     "PackageCapabilityProvide",
     "PackageCapabilityRequire",
+    "PackageDevError",
+    "build_package",
+    "create_package",
+    "inspect_package",
+    "run_package_test",
+    "validate_package",
     "PackageWebDeclaration",
     "ResourceRef",
     "ScopeRef",

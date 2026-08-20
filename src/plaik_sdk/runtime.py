@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Protocol, TypeVar, runtime_checkable
@@ -42,6 +42,8 @@ class SecretReader(Protocol):
 class ServiceResolver(Protocol):
     def resolve(self, contract: str, version: str = "*") -> Any: ...
 
+    def register(self, contract: str, version: str, provider: Any) -> None: ...
+
 
 @runtime_checkable
 class EventPublisher(Protocol):
@@ -55,6 +57,15 @@ class EventPublisher(Protocol):
         scope: ScopeRef | None = None,
         resource: ResourceRef | None = None,
         correlation_id: str | None = None,
+    ) -> None: ...
+
+    def subscribe(
+        self,
+        contract: str,
+        version: str,
+        handler: Callable[[Mapping[str, Any]], None],
+        *,
+        priority: int = 100,
     ) -> None: ...
 
 

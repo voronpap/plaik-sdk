@@ -13,8 +13,20 @@ This repository owns the stable interfaces that third-party modules, integration
 - `ExtensionRuntime.health` (`HealthReporter`) for package-owned `HealthIssue` reports, not process `/health`;
 - SDK helpers;
 - compatibility validators;
-- scaffolding and developer tooling;
+- scaffolding and developer tooling (`plaik-sdk new|validate|test|build|inspect`);
 - public examples required to author PLAIK extensions.
+
+A package must depend only on released `plaik-sdk`. It must not import `plaik_core`.
+
+```bash
+plaik-sdk new module catalog
+plaik-sdk validate catalog
+plaik-sdk test catalog
+plaik-sdk build catalog
+plaik-sdk inspect catalog
+```
+
+The operator CLI in PLAIK exposes the same loop as `plaik dev` and `plaik package`.
 
 `SecretReference` is a pointer (`provider`, `key`, `version`) with a redacted repr. It is not a secret value. Capability ids are shared contract names, not provider-package namespaces. Packs may require capabilities and must not provide them.
 
