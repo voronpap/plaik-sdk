@@ -51,7 +51,7 @@ plaik-sdk
 
 Consumers depend on released SDK artifacts with explicit compatibility ranges. No Git submodules are used for normal product composition.
 
-PLAIK runtime **0.4.x** requires `plaik-sdk>=0.4.0,<0.5.0`. Official 0.4 modules depend on this SDK; they must not import `plaik_core`.
+PLAIK runtime **0.4.x** requires `plaik-sdk>=0.4.0,<0.5.0`. Official 0.4 modules depend on this SDK; they must not import `plaik_core`. GitHub Release `v0.4.0` publishes the 0.4.0 SDK wheel.
 
 ## License
 
